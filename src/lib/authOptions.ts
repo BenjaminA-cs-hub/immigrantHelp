@@ -54,13 +54,13 @@ export const authOptions: NextAuthOptions = {
           .eq("email", credentials.email)
           .single();
 
-        if (!user) return null;
+        if (!user) throw new Error("No account found with that email. Please sign up first.");
 
         const passwordMatch = await bcrypt.compare(
           credentials.password,
           user.password
         );
-        if (!passwordMatch) return null;
+        if (!passwordMatch) throw new Error("Incorrect password. Please try again.");
 
         return {
           id: user.id,
@@ -75,6 +75,24 @@ export const authOptions: NextAuthOptions = {
   ],
   pages: { signIn: "/auth/signin" },
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const { data } = await supabase
+          .from("users")
+          .select("id")
+          .eq("email", user.email)
+          .maybeSingle();
+
+        if (!data) {
+          await supabase.from("users").insert({
+            email: user.email,
+            username: user.name ?? user.email.split("@")[0],
+            password: null,
+          });
+        }
+      }
+      return true;
+    },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id;
