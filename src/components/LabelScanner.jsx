@@ -34,11 +34,8 @@ export default function LabelScanner() {
   };
 
   return (
-    <div className="min-h-screen bg-white p-6 max-w-xl mx-auto">
-      
-      {/* Header */}
-      <h1 className="text-3xl font-bold text-green-700 mb-2">🌿 RootKitchen</h1>
-      <p className="text-gray-500 mb-6">Scan a nutrition label in your language</p>
+    <div className="w-full bg-white">
+    <div className="max-w-xl mx-auto p-6">
 
       {/* Language Selector */}
       <div className="mb-4">
@@ -98,6 +95,7 @@ export default function LabelScanner() {
         </div>
       )}
 
+    </div>
     </div>
   );
 }
