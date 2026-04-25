@@ -121,9 +121,9 @@ export default function NavBar() {
       {/* Desktop — top bar */}
       <nav className="hidden md:flex fixed top-0 inset-x-0 h-14 bg-white border-b border-gray-100 z-50 items-center">
         <div className="max-w-5xl mx-auto w-full flex items-center gap-8 px-8">
-          <Link href="/" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
+          <Link href="/" className="flex items-center gap-0 shrink-0 hover:opacity-80 transition-opacity">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="RootKitchen logo" className="w-10 h-10 object-contain" />
+            <img src="/logo.png" alt="RootKitchen logo" className="w-20 h-20 object-contain" />
             <span className="text-green-700 font-bold text-lg">RootKitchen</span>
           </Link>
 
@@ -152,9 +152,9 @@ export default function NavBar() {
 
       {/* Mobile — top bar (logo + user bubble) */}
       <header className="md:hidden fixed top-0 inset-x-0 h-12 bg-white border-b border-gray-100 z-50 flex items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="RootKitchen logo" className="w-10 h-10 object-contain" />
+          <img src="/logo.png" alt="RootKitchen logo" className="w-20 h-20 object-contain" />
           <span className="text-green-700 font-bold text-base">RootKitchen</span>
         </Link>
         <UserMenu />
