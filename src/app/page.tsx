@@ -1,4 +1,4 @@
-import LabelScanner from "@/components/LabelScanner";
+import LabelScanner from "../components/LabelScanner";
 
 export default function Home() {
   return (
