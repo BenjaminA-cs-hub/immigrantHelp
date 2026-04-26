@@ -2,9 +2,9 @@
 import { useState, useEffect } from "react";
 
 const TABS = [
-  { id: "clinics", label: "🏥 Clinics" },
-  { id: "pantries", label: "🥫 Food Pantries" },
-  { id: "dietitians", label: "🥗 Dietitians" },
+  { id: "clinics", label: "Clinics" },
+  { id: "pantries", label: "Food Pantries" },
+  { id: "dietitians", label: "Dietitians" },
 ];
 
 const dietitians = [
@@ -52,64 +52,44 @@ const dietitians = [
   },
 ];
 
-function ClinicCard({ item }) {
+function ResourceCard({ title, badge, badgeColor, borough, phone, address, languages, reason }) {
   return (
-    <div className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition">
-      <div className="flex items-start justify-between mb-2">
-        <h2 className="font-semibold text-gray-900 text-base">{item.facility_name || item.name}</h2>
-        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full ml-2 whitespace-nowrap">
-          {item.facility_type || item.type || "Clinic"}
+    <div className="border border-gray-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition">
+      <div className="flex items-start justify-between mb-3">
+        <h2 className="font-semibold text-gray-900 text-sm leading-snug pr-2">{title}</h2>
+        <span className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap shrink-0 ${badgeColor}`}>
+          {badge}
         </span>
       </div>
-      <p className="text-sm text-gray-500 mb-1">📍 {item.borough}</p>
-      {item.phone && <p className="text-sm text-gray-500 mb-1">📞 {item.phone}</p>}
-      {item.reason && <p className="text-sm text-green-700 italic mt-2">{item.reason}</p>}
-    </div>
-  );
-}
-
-function PantryCard({ item }) {
-  return (
-    <div className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition">
-      <div className="flex items-start justify-between mb-2">
-        <h2 className="font-semibold text-gray-900 text-base">
-          {item.site_name || item.program_name || item.name}
-        </h2>
-        <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full ml-2 whitespace-nowrap">
-          Food Pantry
-        </span>
+      <div className="flex flex-col gap-1">
+        {borough && (
+          <p className="text-xs text-gray-400">
+            <span className="font-medium text-gray-500">Borough</span> — {borough}
+          </p>
+        )}
+        {address && (
+          <p className="text-xs text-gray-400">
+            <span className="font-medium text-gray-500">Address</span> — {address}
+          </p>
+        )}
+        {phone && (
+          <p className="text-xs text-gray-400">
+            <span className="font-medium text-gray-500">Phone</span> — {phone}
+          </p>
+        )}
       </div>
-      <p className="text-sm text-gray-500 mb-1">📍 {item.borough || item.site_borough}</p>
-      {item.street_address && (
-        <p className="text-sm text-gray-500 mb-1">🏠 {item.street_address}</p>
-      )}
-      {item.phone && <p className="text-sm text-gray-500 mb-1">📞 {item.phone}</p>}
-      {item.reason && <p className="text-sm text-green-700 italic mt-2">{item.reason}</p>}
-    </div>
-  );
-}
-
-function DietitianCard({ item }) {
-  return (
-    <div className="border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition">
-      <div className="flex items-start justify-between mb-2">
-        <h2 className="font-semibold text-gray-900 text-base">{item.name}</h2>
-        <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full ml-2 whitespace-nowrap">
-          Dietitian
-        </span>
-      </div>
-      <p className="text-sm text-gray-500 mb-1">📍 {item.borough}</p>
-      <p className="text-sm text-gray-500 mb-2">📞 {item.phone}</p>
-      {item.languages && (
-        <div className="flex flex-wrap gap-1">
-          {item.languages.map((l) => (
-            <span key={l} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+      {languages && languages.length > 0 && (
+        <div className="flex flex-wrap gap-1 mt-3">
+          {languages.map((l) => (
+            <span key={l} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
               {l}
             </span>
           ))}
         </div>
       )}
-      {item.reason && <p className="text-sm text-green-700 italic mt-2">{item.reason}</p>}
+      {reason && (
+        <p className="text-xs text-green-700 mt-3 leading-relaxed">{reason}</p>
+      )}
     </div>
   );
 }
@@ -121,7 +101,6 @@ export default function HealthResources() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // AI Search state
   const [query, setQuery] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [aiMessage, setAiMessage] = useState("");
@@ -138,9 +117,7 @@ export default function HealthResources() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(
-        "https://data.cityofnewyork.us/resource/q6fj-vxf8.json?$limit=50"
-      );
+      const res = await fetch("https://data.cityofnewyork.us/resource/q6fj-vxf8.json?$limit=50");
       const data = await res.json();
       setClinics(data);
     } catch {
@@ -154,9 +131,7 @@ export default function HealthResources() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(
-        "https://data.cityofnewyork.us/resource/9d9t-bmk7.json?$limit=50"
-      );
+      const res = await fetch("https://data.cityofnewyork.us/resource/9d9t-bmk7.json?$limit=50");
       const data = await res.json();
       setPantries(data);
     } catch {
@@ -205,7 +180,7 @@ export default function HealthResources() {
   const renderTabContent = () => {
     if (loading) {
       return (
-        <div className="text-center text-green-600 font-medium animate-pulse py-10">
+        <div className="text-center text-gray-400 text-sm py-10">
           Loading resources...
         </div>
       );
@@ -219,22 +194,52 @@ export default function HealthResources() {
     }
     if (activeTab === "clinics") {
       return (
-        <div className="flex flex-col gap-4">
-          {clinics.map((item, i) => <ClinicCard key={i} item={item} />)}
+        <div className="flex flex-col gap-3">
+          {clinics.map((item, i) => (
+            <ResourceCard
+              key={i}
+              title={item.facility_name || item.name}
+              badge={item.facility_type || "Clinic"}
+              badgeColor="bg-blue-50 text-blue-700"
+              borough={item.borough}
+              phone={item.phone}
+            />
+          ))}
         </div>
       );
     }
     if (activeTab === "pantries") {
       return (
-        <div className="flex flex-col gap-4">
-          {pantries.map((item, i) => <PantryCard key={i} item={item} />)}
+        <div className="flex flex-col gap-3">
+          {pantries.map((item, i) => (
+            <ResourceCard
+              key={i}
+              title={item.site_name || item.program_name || item.name}
+              badge="Food Pantry"
+              badgeColor="bg-green-50 text-green-700"
+              borough={item.borough || item.site_borough}
+              address={item.street_address}
+              phone={item.phone}
+            />
+          ))}
         </div>
       );
     }
     if (activeTab === "dietitians") {
       return (
-        <div className="flex flex-col gap-4">
-          {dietitians.map((item, i) => <DietitianCard key={i} item={item} />)}
+        <div className="flex flex-col gap-3">
+          {dietitians.map((item, i) => (
+            <ResourceCard
+              key={i}
+              title={item.name}
+              badge="Dietitian"
+              badgeColor="bg-purple-50 text-purple-700"
+              borough={item.borough}
+              address={item.address}
+              phone={item.phone}
+              languages={item.languages}
+            />
+          ))}
         </div>
       );
     }
@@ -242,12 +247,14 @@ export default function HealthResources() {
 
   return (
     <div className="min-h-screen bg-white p-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-green-700 mb-1">🏥 Health Resources</h1>
-      <p className="text-gray-500 mb-6">
+
+      <p className="text-xs text-gray-400 uppercase tracking-widest mb-1">NYC Resources</p>
+      <h1 className="text-2xl font-bold text-gray-900 mb-1">Health Resources</h1>
+      <p className="text-gray-400 text-sm mb-6">
         Browse by category or search in any language
       </p>
 
-      {/* AI Search Bar */}
+      {/* AI Search */}
       <div className="mb-6">
         <div className="flex gap-2 mb-3">
           <input
@@ -255,15 +262,15 @@ export default function HealthResources() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAiSearch()}
-            placeholder="Search in any language... e.g. clínica en Queens, مستشفى في بروكلين"
-            className="flex-1 border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+            placeholder="Search in any language — e.g. clínica en Queens, مستشفى في بروكلين"
+            className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
           />
           <button
             onClick={handleAiSearch}
             disabled={aiLoading}
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-xl transition disabled:opacity-50"
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-3 rounded-xl transition disabled:opacity-50 text-sm"
           >
-            {aiLoading ? "..." : "Search"}
+            {aiLoading ? "Searching..." : "Search"}
           </button>
         </div>
 
@@ -279,7 +286,7 @@ export default function HealthResources() {
             <button
               key={example}
               onClick={() => setQuery(example)}
-              className="text-xs bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full hover:bg-green-100 transition"
+              className="text-xs bg-gray-50 text-gray-500 border border-gray-200 px-3 py-1 rounded-full hover:bg-gray-100 transition"
             >
               {example}
             </button>
@@ -291,18 +298,20 @@ export default function HealthResources() {
       {isAiMode ? (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-gray-500">AI search results for: <span className="font-medium text-gray-800">"{query}"</span></p>
+            <p className="text-sm text-gray-400">
+              Results for <span className="font-medium text-gray-700">"{query}"</span>
+            </p>
             <button
               onClick={clearAiSearch}
-              className="text-sm text-green-700 hover:underline"
+              className="text-sm text-gray-500 hover:text-gray-800 transition"
             >
-              ← Back to browse
+              ← Back
             </button>
           </div>
 
           {aiLoading && (
-            <div className="text-center text-green-600 font-medium animate-pulse py-10">
-              🔍 Finding resources for you...
+            <div className="text-center text-gray-400 text-sm py-10">
+              Finding resources for you...
             </div>
           )}
 
@@ -313,35 +322,44 @@ export default function HealthResources() {
           )}
 
           {aiMessage && (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
-              <p className="text-green-800 text-sm">{aiMessage}</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-4">
+              <p className="text-gray-700 text-sm">{aiMessage}</p>
             </div>
           )}
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {aiResults.map((r, i) => (
-              <ClinicCard key={i} item={r} />
+              <ResourceCard
+                key={i}
+                title={r.name}
+                badge={r.type || "Resource"}
+                badgeColor="bg-blue-50 text-blue-700"
+                borough={r.borough}
+                phone={r.phone}
+                reason={r.reason}
+              />
             ))}
           </div>
         </div>
       ) : (
-        /* Browse Mode with Tabs */
         <div>
-          <div className="flex gap-2 mb-6 border-b border-gray-200">
+          {/* Tabs */}
+          <div className="flex gap-1 mb-6 border-b border-gray-100">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 text-sm font-medium rounded-t-lg transition ${
+                className={`px-4 py-2 text-sm font-medium transition border-b-2 -mb-px ${
                   activeTab === tab.id
-                    ? "bg-green-600 text-white"
-                    : "text-gray-500 hover:text-green-700"
+                    ? "text-green-700 border-green-600"
+                    : "text-green-400 border-transparent hover:text-green-600"
                 }`}
               >
                 {tab.label}
               </button>
             ))}
           </div>
+
           {renderTabContent()}
         </div>
       )}
