@@ -22,14 +22,7 @@ function HomeIcon({ active }: { active: boolean }) {
   );
 }
 
-function ExploreIcon({ active }: { active: boolean }) {
-  return (
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={active ? 2.5 : 2}>
-      <circle cx="11" cy="11" r="8" />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
-    </svg>
-  );
-}
+
 
 function HealthIcon({ active }: { active: boolean }) {
   return (
@@ -40,10 +33,10 @@ function HealthIcon({ active }: { active: boolean }) {
 }
 
 const tabs = [
-  { label: "Bookmarked",       href: "/bookmarked",       Icon: BookmarkIcon },
   { label: "Home",             href: "/",                 Icon: HomeIcon },
+  { label: "Label Scanner",    href: "/scan",             Icon: HomeIcon },
+  { label: "Bookmarked",       href: "/bookmarked",       Icon: BookmarkIcon },
   { label: "Health Resources", href: "/health-resources", Icon: HealthIcon },
-  { label: "Explore",          href: "/explore",          Icon: ExploreIcon },
 ] as const;
 
 function UserMenu() {

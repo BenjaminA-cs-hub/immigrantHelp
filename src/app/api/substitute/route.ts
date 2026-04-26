@@ -40,9 +40,11 @@ Provide 3 substitutes. Be specific and practical for someone living in NYC.`,
       ],
     });
 
-    const raw = (response.content[0] as { type: "text"; text: string }).text.trim();
-    const parsed = JSON.parse(raw);
-    return Response.json(parsed);
+   const raw = (response.content[0] as { type: "text"; text: string }).text.trim();
+const cleaned = raw.replace(/^```json\n?/, "").replace(/^```\n?/, "").replace(/```$/, "").trim();
+console.log("Claude returned:", cleaned);
+const parsed = JSON.parse(cleaned);
+return Response.json(parsed);
 
   } catch (err: any) {
     console.error("Substitute API error:", err);
