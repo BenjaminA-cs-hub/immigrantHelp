@@ -6,7 +6,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Desktop welcome header */}
       <div className="hidden md:block max-w-5xl mx-auto px-8 pt-10 pb-4 text-center">
-        <h2 className="text-2xl font-bold text-gray-800">Welcome to RootKitchen</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Welcome to FoodBridge</h2>
         <p className="text-gray-500 text-sm mt-1">Scan a food label or find an ingredient substitute.</p>
       </div>
 

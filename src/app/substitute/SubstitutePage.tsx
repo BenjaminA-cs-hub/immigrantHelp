@@ -58,7 +58,7 @@ export default function SubstitutePage() {
   return (
     <div className="min-h-screen bg-white p-6 max-w-xl mx-auto">
 
-      <h1 className="text-3xl font-bold text-green-700 mb-2">🌿 RootKitchen</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">FoodBridge</h1>
       <p className="text-gray-500 mb-6">Find substitutes for ingredients in your language</p>
 
       <div className="mb-4">

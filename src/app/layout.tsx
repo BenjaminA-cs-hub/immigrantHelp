@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RootKitchen",
+  title: "FoodBridge",
   description: "Your food, in your language.",
   icons: {
     icon: [

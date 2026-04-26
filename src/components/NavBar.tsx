@@ -117,7 +117,7 @@ export default function NavBar() {
           <Link href="/" className="flex items-center gap-0 shrink-0 hover:opacity-80 transition-opacity">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="RootKitchen logo" className="w-20 h-20 object-contain" />
-            <span className="text-green-700 font-bold text-lg">RootKitchen</span>
+            <span className="text-green-700 font-bold text-lg">FoodBridge</span>
           </Link>
 
           <div className="flex flex-1 justify-center gap-8">
