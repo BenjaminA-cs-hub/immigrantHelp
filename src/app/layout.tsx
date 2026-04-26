@@ -18,7 +18,18 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "RootKitchen",
-  description: "A multilingual food companion for immigrants",
+  description: "Your food, in your language.",
+  icons: {
+    icon: [
+      { url: "/logo.png", sizes: "512x512", type: "image/png" },
+      { url: "/logo.png", sizes: "192x192", type: "image/png" },
+      { url: "/logo.png", sizes: "any" },
+    ],
+    apple: [
+      { url: "/logo.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+  },
 };
 
 export default function RootLayout({

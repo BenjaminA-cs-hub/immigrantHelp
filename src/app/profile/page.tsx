@@ -36,8 +36,9 @@ export default function ProfilePage() {
     fetch("/api/profile")
       .then(r => r.json())
       .then(data => {
+        if (data.error) { setMessage({ text: data.error, ok: false }); return; }
         if (data.username) setUsername(data.username);
-        if (data.ethnicity) setEthnicity(data.ethnicity);
+        if (data.ethnicity != null) setEthnicity(data.ethnicity);
         if (data.avatar_url) setAvatarPreview(data.avatar_url);
       });
   }, []);

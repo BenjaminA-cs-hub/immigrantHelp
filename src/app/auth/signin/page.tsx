@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+
 
 export default function AuthPage() {
-  const router = useRouter();
+
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -16,14 +16,32 @@ export default function AuthPage() {
 
   const handleSubmit = async () => {
     setError(null);
+
+    // Client-side validation
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required.");
+      return;
+    }
+    if (mode === "signup" && !username.trim()) {
+      setError("Username is required.");
+      return;
+    }
+
     setLoading(true);
 
     if (mode === "signup") {
       const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username: username.trim(), email: email.trim(), password }),
       });
+
+      const contentType = res.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        setError("Server error during signup. Please try again.");
+        setLoading(false);
+        return;
+      }
 
       const data = await res.json();
       if (data.error) {
@@ -34,49 +52,57 @@ export default function AuthPage() {
     }
 
     const result = await signIn("credentials", {
-      email,
+      email: email.trim(),
       password,
       rememberMe: mode === "signup" ? rememberMe.toString() : "false",
       redirect: false,
     });
 
-    if (result?.error) {
-      setError("Invalid email or password.");
+    if (!result?.ok || result?.error) {
+      setError(result?.error === "CredentialsSignin" || !result?.error ? "Invalid email or password." : result.error);
       setLoading(false);
       return;
     }
 
-    router.push("/");
+    window.location.href = "/";
+  };
+
+  const switchMode = (next: "signin" | "signup") => {
+    setMode(next);
+    setError(null);
+    setUsername("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
 
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-green-700 mb-2">🌿 RootKitchen</h1>
-          <p className="text-gray-400 text-sm">Your food, in your language.</p>
+        {/* Logo */}
+        <div className="flex flex-col items-center mb-10">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="RootKitchen" className="w-28 h-28 object-contain" />
+          <h1 className="text-2xl font-bold text-green-700 mt-1">RootKitchen</h1>
+          <p className="text-gray-400 text-sm mt-1">Your food, in your language.</p>
         </div>
 
         <div className="border border-gray-200 rounded-2xl p-8 flex flex-col gap-4">
 
+          {/* Mode toggle */}
           <div className="flex rounded-xl overflow-hidden border border-gray-200 mb-2">
             <button
-              onClick={() => { setMode("signin"); setError(null); }}
+              onClick={() => switchMode("signin")}
               className={`flex-1 py-2 text-sm font-semibold transition ${
-                mode === "signin"
-                  ? "bg-green-600 text-white"
-                  : "bg-white text-gray-500"
+                mode === "signin" ? "bg-green-600 text-white" : "bg-white text-gray-500"
               }`}
             >
               Sign in
             </button>
             <button
-              onClick={() => { setMode("signup"); setError(null); }}
+              onClick={() => switchMode("signup")}
               className={`flex-1 py-2 text-sm font-semibold transition ${
-                mode === "signup"
-                  ? "bg-green-600 text-white"
-                  : "bg-white text-gray-500"
+                mode === "signup" ? "bg-green-600 text-white" : "bg-white text-gray-500"
               }`}
             >
               Sign up
@@ -88,7 +114,7 @@ export default function AuthPage() {
               type="text"
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-500"
             />
           )}
@@ -97,7 +123,7 @@ export default function AuthPage() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-500"
           />
 
@@ -105,7 +131,7 @@ export default function AuthPage() {
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={e => setPassword(e.target.value)}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 placeholder:text-gray-500"
           />
 
@@ -114,7 +140,7 @@ export default function AuthPage() {
               <input
                 type="checkbox"
                 checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
+                onChange={e => setRememberMe(e.target.checked)}
                 className="w-4 h-4 accent-green-600 rounded"
               />
               <span className="text-sm text-gray-500">Remember me for 30 days</span>
@@ -122,7 +148,7 @@ export default function AuthPage() {
           )}
 
           {error && (
-            <p className="text-red-500 text-xs text-center">{error}</p>
+            <p className="text-red-500 text-xs text-center bg-red-50 rounded-lg py-2 px-3">{error}</p>
           )}
 
           <button
@@ -130,7 +156,9 @@ export default function AuthPage() {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-sm transition disabled:opacity-50"
           >
-            {loading ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+            {loading
+              ? mode === "signup" ? "Creating account..." : "Signing in..."
+              : mode === "signin" ? "Sign in" : "Create account"}
           </button>
 
           <div className="flex items-center gap-3">
@@ -154,9 +182,7 @@ export default function AuthPage() {
 
         </div>
 
-        <p className="text-center text-xs text-gray-300 mt-6">
-          Built for Queens, NY communities
-        </p>
+        <p className="text-center text-xs text-gray-300 mt-6">Built for Queens, NY communities</p>
 
       </div>
     </div>
